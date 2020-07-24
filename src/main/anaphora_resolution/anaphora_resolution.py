@@ -10,12 +10,36 @@ sen = 'काठमाडौँ_NNP_LOC —_SYM_O नयाँ_JJ_ORG शक्�
 personal_pronouns = ['उनी', 'उन', 'उनै', 'उहाँ', 'उहा', 'उ', 'ऊ', 'वहाँ']
 
 
-# noinspection PyMethodMayBeStatic
+def calculate_salience_factor(discourse_object):
+    if discourse_object.get_next_token_pos() == 'PLE':
+        return 70
+
+    elif discourse_object.get_next_token_pos() == 'PLAI':
+        return 80
+
+    elif discourse_object.get_next_token_pos() == 'CC':
+        return 80
+
+    elif discourse_object.get_next_token_pos() == 'PKO':
+        return 80
+
+    elif discourse_object.get_next_token_pos().startswith('VB'):
+        return 80
+
+    elif discourse_object.get_next_token_pos().startswith('RP'):
+        return 80
+
+    else:
+        return 70
+
+
 class AnaphoraResolution:
     def __init__(self):
         self.counter = list()
 
     def resolve_anaphora(self, article):
+
+        print('\nResolving Anaphora')
 
         temp_article = list()
 
@@ -34,27 +58,11 @@ class AnaphoraResolution:
                 # closest_per = discourse_object.get_token()
 
                 score = discourse_model.get(discourse_object.get_token())
-
                 if score is None:
                     score = 0
 
-                if discourse_object.get_next_token_pos() == 'PLE':
-                    discourse_model.update({discourse_object.get_token(): score + 80})
-
-                if discourse_object.get_next_token_pos() == 'PLAI':
-                    discourse_model.update({discourse_object.get_token(): score + 70})
-                    closest_per = discourse_object.get_token()
-
-                if discourse_object.get_next_token_pos() == 'CC':
-                    discourse_model.update({discourse_object.get_token(): score + 70})
-
-                if discourse_object.get_next_token_pos() == 'PKO':
-                    discourse_model.update({discourse_object.get_token(): score + 70})
-                    closest_per = discourse_object.get_token()
-
-                if discourse_object.get_next_token_pos() == 'VBX':
-                    discourse_model.update({discourse_object.get_token(): score + 70})
-                    closest_per = discourse_object.get_token()
+                salience_factor = calculate_salience_factor(discourse_object)
+                discourse_model.update({discourse_object.get_token(): score + salience_factor})
 
             if discourse_object.get_token_pos() == 'YF':
                 for key, value in discourse_model.items():
@@ -63,24 +71,41 @@ class AnaphoraResolution:
             if discourse_object.get_token() in personal_pronouns:
 
                 if discourse_object.get_next_token_pos() != 'HRU':
+                    if len(discourse_model) != 0:
+                        possible_antecedent = max(discourse_model.items(), key=operator.itemgetter(1))[0]
+                        discourse_object.set_token(possible_antecedent)
+                        discourse_object.set_token_ner('PER')
 
-                    score = discourse_model.get(closest_per)
+                        score = discourse_model.get(discourse_object.get_token())
+                        salience_factor = calculate_salience_factor(discourse_object)
+                        discourse_model.update({discourse_object.get_token(): score + salience_factor})
 
-                    if score is None:
-                        score = 0
+                        # print(discourse_model)
 
-                    discourse_model.update({closest_per: score + 100})
+        # return ' '.join([discourse_object.get_token() for discourse_object in discourse_object_list])
 
-                    possible_antecedent = max(discourse_model.items(), key=operator.itemgetter(1))[0]
+        named_entities = list(set(list(discourse_model.keys())))
 
-                    discourse_object.set_token(possible_antecedent)
+        all_sentences = ' '.join([discourse_object.get_token() for discourse_object in discourse_object_list]) \
+            .split('।')
 
-        return ' '.join([discourse_object.get_token() for discourse_object in discourse_object_list])
+        sentence_with_politician_name = list()
+
+        for s in all_sentences:
+            for named_entity in named_entities:
+                if named_entity in s:
+                    sentence_with_politician_name.append(s)
+                    break
+
+        return '{}{}'.format('।'.join(sentence_with_politician_name), '।')
 
     def process_discourse(self, article):
+
+        # print(article)
+
         temp = article.strip().split(' ')
 
-        print(len(temp))
+        # print(len(temp))
 
         while '' in temp:
             temp.remove('')
@@ -127,7 +152,7 @@ class AnaphoraResolution:
 
             prev_per = temp[i].split('_')[2]
 
-        print('\n{}'.format(list(set(self.counter))))
+        # print('\n{}'.format(list(set(self.counter))))
 
         if len(list(set(self.counter))) <= 3:
             return discourse_object_list

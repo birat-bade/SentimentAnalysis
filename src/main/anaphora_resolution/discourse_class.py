@@ -32,3 +32,6 @@ class DiscourseClass:
 
     def set_token(self, token):
         self.token = token
+
+    def set_token_ner(self, ner):
+        self.token_ner = ner

@@ -3,6 +3,9 @@ import pandas as pd
 import pickle
 import numpy as np
 
+from nltk.corpus import indian
+from sklearn.utils import shuffle
+
 from googletrans import Translator
 from nltk.tag import tnt
 from sklearn import metrics
@@ -36,7 +39,7 @@ class NepaliPoSTagger:
             tagged_word_list.append(data[0])
             tagged_tag_list.append(data[1])
 
-        print(' '.join(combined_tagged_words_list))
+        # print(' '.join(combined_tagged_words_list))
 
         return tagged_word_list, tagged_tag_list
 
@@ -50,14 +53,18 @@ class NepaliPoSTagger:
         pickle.dump(self.tnt_pos_tagger, pickle_file)
         pickle_file.close()
 
-    def five_fold_validation(self, corpora):
-        print('K-fold Validation')
-        ten_fold = np.array_split(corpora, 5)
+    def k_fold_validation(self, k):
+        print('{}-fold Validation'.format(k))
 
-        for i in range(0, 5):
+        corpora = indian.tagged_sents('nepali.pos')
+        corpora = shuffle(corpora)
+
+        ten_fold = np.array_split(corpora, k)
+
+        for i in range(0, k):
             print('\n{}-fold'.format(str(i + 1)))
             self.reinitialize_model()
-            fold_index_list = [j for j in range(0, 5)]
+            fold_index_list = [j for j in range(0, k)]
             fold_index_list.remove(i)
             nine_fold = list()
 
