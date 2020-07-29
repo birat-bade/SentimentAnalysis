@@ -50,7 +50,7 @@ def pipeline(article):
 
     # print('\n{:15}{:5} {}'.format('word', 'pos', 'ner'))
     for word, pos, ner in zip(article, pos_tags, ner_tags):
-        # print('{:15} {:5} {}'.format(word, pos, ner))
+        print('{:15} {:5} {}'.format(word, pos, ner))
         combined_article = combined_article.strip() + ' ' + word.strip() + '_' + pos.strip() + '_' + ner.strip() + ' '
 
     ner_df = pd.DataFrame()
@@ -66,7 +66,7 @@ def pipeline(article):
     anaphora_resolution = AnaphoraResolution()
     article = anaphora_resolution.resolve_anaphora(combined_article)
 
-    # print(article)
+    print(article)
 
     return article
 
@@ -145,7 +145,7 @@ if __name__ == '__main__':
 
     nepali_ner = NepaliNER()
 
-    # pipeline('नेपालको प्रधानमन्त्रीको नाम केपी शर्मा ओली हो । उनी एक असल नेता हुन ।')
+    # pipeline('नेपालको प्रधानमन्त्रीको नाम केपी शर्मा ओली हो । उनी एक असल नेता हुन । राम मनोहर यादव निकिता पौडेलको विमलेन्द्र निधि')
     # exit()
 
     sentiment_training_data['length'] = sentiment_training_data['article'].str.len()
@@ -161,7 +161,7 @@ if __name__ == '__main__':
 
     print(sentiment_training_data.shape)
 
-    sentiment_training_data = sentiment_training_data[:1000]
+    # sentiment_training_data = sentiment_training_data[:300]
 
     sentiment_training_data = sentiment_training_data.drop_duplicates(keep='first', subset='article_id')
 
@@ -172,12 +172,27 @@ if __name__ == '__main__':
     # sentiment_training_data = sentiment_training_data[sentiment_training_data['article_id'] == '47158']
     # sentiment_training_data = sentiment_training_data[sentiment_training_data['article_id'] == '25954']
     # sentiment_training_data = sentiment_training_data[sentiment_training_data['article_id'] == '120503']
+    # sentiment_training_data = sentiment_training_data[sentiment_training_data['article_id'] == '41864']
+    # sentiment_training_data = sentiment_training_data[sentiment_training_data['article_id'] == '47121'] 13199 30397  109581 39402 78758 77904 16024 16946
+    sentiment_training_data = sentiment_training_data[sentiment_training_data['article_id'] == '15634']
 
     print(sentiment_training_data.shape)
 
     sentiment_training_data['resolved_article'] = sentiment_training_data.apply(process_articles, 1)
+    sentiment_training_data = sentiment_training_data[sentiment_training_data['resolved_article'] != '']
 
-    sentiment_training_data.to_csv(Config.sentiment_testing_data_anaphora_resolved, index=False, encoding='utf-8')
+    print(sentiment_training_data.shape)
+
+    # sentiment_training_data.to_csv(Config.sentiment_testing_data_anaphora_resolved, index=False, encoding='utf-8')
+    exit()
+
     anaphora_sentence = pd.DataFrame()
     sentiment_training_data.apply(split_sentences, 1)
-    anaphora_sentence.to_csv(Config.sentiment_testing_data, index=False, encoding='utf-8')
+
+    anaphora_sentence = anaphora_sentence.fillna('')
+    anaphora_sentence = anaphora_sentence[anaphora_sentence['article_sentence'] != '']
+    print(anaphora_sentence.shape)
+
+    print(list(set(anaphora_sentence.article_id.tolist())))
+
+    anaphora_sentence.to_csv('anaphora_resolution_five_sentences.csv', index=False, encoding='utf-8')

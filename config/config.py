@@ -27,14 +27,14 @@ class Config:
 
     ner_training_file = 'F:\\Projects\\Python Projects\\SentimentAnalysis\\files\\ner\\total.bio'
 
-    ner_model = 'F:\\Projects\\Python Projects\\SentimentAnalysis\\files\\ner\\stanford-ner-2018-10-16\\dummy-ner-model-nepali.ser.gz'
+    ner_model = 'F:\\Projects\\Python Projects\\SentimentAnalysis\\files\\ner\\dummy-ner-model-nepali.ser.gz'
     ner_jar = 'F:\\Projects\\Python Projects\\SentimentAnalysis\\files\\ner\\stanford-ner-2018-10-16\\stanford-ner.jar'
 
     sentiment_raw_training_data = 'F:\\Projects\Python Projects\\SentimentAnalysis\\files\\sentiment_analysis\\sentiment_analysis_plotting_dataset_raw.csv'
     sentiment_labelled_data = 'F:\\Projects\Python Projects\\SentimentAnalysis\\files\\sentiment_analysis\\sentiment_labelled_data.xlsx'
 
-    sentiment_testing_data_anaphora_resolved = 'F:\\Projects\Python Projects\\SentimentAnalysis\\files\\sentiment_analysis\\anaphora_resolved_1.csv'
-    sentiment_testing_data = 'F:\\Projects\Python Projects\\SentimentAnalysis\\files\\sentiment_analysis\\training_data_1.csv'
+    sentiment_testing_data_anaphora_resolved = 'F:\\Projects\Python Projects\\SentimentAnalysis\\files\\sentiment_analysis\\anaphora_resolved.csv'
+    sentiment_testing_data = 'F:\\Projects\Python Projects\\SentimentAnalysis\\files\\sentiment_analysis\\training_data.csv'
 
     sentiment_analysis_model = 'F:\\Projects\Python Projects\\SentimentAnalysis\\files\\sentiment_analysis\\sentiment_analysis_model.h5'
 

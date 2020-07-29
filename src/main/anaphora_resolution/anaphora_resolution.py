@@ -10,29 +10,6 @@ sen = 'काठमाडौँ_NNP_LOC —_SYM_O नयाँ_JJ_ORG शक्�
 personal_pronouns = ['उनी', 'उन', 'उनै', 'उहाँ', 'उहा', 'उ', 'ऊ', 'वहाँ']
 
 
-def calculate_salience_factor(discourse_object):
-    if discourse_object.get_next_token_pos() == 'PLE':
-        return 70
-
-    elif discourse_object.get_next_token_pos() == 'PLAI':
-        return 80
-
-    elif discourse_object.get_next_token_pos() == 'CC':
-        return 80
-
-    elif discourse_object.get_next_token_pos() == 'PKO':
-        return 80
-
-    elif discourse_object.get_next_token_pos().startswith('VB'):
-        return 80
-
-    elif discourse_object.get_next_token_pos().startswith('RP'):
-        return 80
-
-    else:
-        return 70
-
-
 class AnaphoraResolution:
     def __init__(self):
         self.counter = list()
@@ -50,12 +27,14 @@ class AnaphoraResolution:
         discourse_model = dict()
 
         closest_per = ''
+        closest_per_next_token_pos = ''
 
         for discourse_object in discourse_object_list:
 
             if discourse_object.get_token_ner() == 'PER':
 
-                # closest_per = discourse_object.get_token()
+                closest_per = discourse_object.get_token()
+                closest_per_next_token_pos = discourse_object.get_next_token_pos()
 
                 score = discourse_model.get(discourse_object.get_token())
                 if score is None:
@@ -65,6 +44,10 @@ class AnaphoraResolution:
                 discourse_model.update({discourse_object.get_token(): score + salience_factor})
 
             if discourse_object.get_token_pos() == 'YF':
+
+                closest_per = ''
+                closest_per_next_token_pos = ''
+
                 for key, value in discourse_model.items():
                     discourse_model.update({key: value / 2})
 
@@ -72,15 +55,22 @@ class AnaphoraResolution:
 
                 if discourse_object.get_next_token_pos() != 'HRU':
                     if len(discourse_model) != 0:
-                        possible_antecedent = max(discourse_model.items(), key=operator.itemgetter(1))[0]
+
+                        # print(discourse_model)
+
+                        if closest_per_next_token_pos == 'PLE':
+                            temp_discourse_model = discourse_model
+                            temp_discourse_model.pop(closest_per, None)
+                            possible_antecedent = max(temp_discourse_model.items(), key=operator.itemgetter(1))[0]
+                        else:
+                            possible_antecedent = max(discourse_model.items(), key=operator.itemgetter(1))[0]
+
                         discourse_object.set_token(possible_antecedent)
                         discourse_object.set_token_ner('PER')
 
                         score = discourse_model.get(discourse_object.get_token())
                         salience_factor = calculate_salience_factor(discourse_object)
                         discourse_model.update({discourse_object.get_token(): score + salience_factor})
-
-                        # print(discourse_model)
 
         # return ' '.join([discourse_object.get_token() for discourse_object in discourse_object_list])
 
@@ -158,6 +148,29 @@ class AnaphoraResolution:
             return discourse_object_list
 
         return []
+
+
+def calculate_salience_factor(discourse_object):
+    if discourse_object.get_next_token_pos() == 'PLE':
+        return 70
+
+    elif discourse_object.get_next_token_pos() == 'PLAI':
+        return 80
+
+    elif discourse_object.get_next_token_pos() == 'CC':
+        return 80
+
+    elif discourse_object.get_next_token_pos() == 'PKO':
+        return 80
+
+    elif discourse_object.get_next_token_pos().startswith('VB'):
+        return 80
+
+    elif discourse_object.get_next_token_pos().startswith('RP'):
+        return 80
+
+    else:
+        return 70
 
 # print('{}  {}  {}  {}  {}  {}  {}'.format(discourse_object.get_index(), discourse_object.get_token(),
 #                                           discourse_object.get_token_pos(), discourse_object.get_token_ner(),

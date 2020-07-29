@@ -11,4 +11,8 @@ class ArticleCleaner:
             string in self.article]
 
     def get_clean_article(self):
-        return ' । '.join(self.article)
+        self.article = self.article[:5]
+        self.article = ' । '.join(self.article)
+        if 'उनी' not in self.article:
+            return
+        return self.article
