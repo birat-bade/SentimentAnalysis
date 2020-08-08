@@ -14,7 +14,7 @@ class Stemmer:
 
         self.nepali_suffix = self.nepali_suffix.sort_values('length', ascending=True)
 
-    def get_suffix(self, string):
+    def stem_article(self, string):
         print('\nStemming Article')
 
         stemmed_list = list()
