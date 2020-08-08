@@ -28,7 +28,7 @@ class Config:
     ner_training_file = 'F:\\Projects\\Python Projects\\SentimentAnalysis\\files\\ner\\total.bio'
 
     ner_model = 'F:\\Projects\\Python Projects\\SentimentAnalysis\\files\\ner\\dummy-ner-model-nepali.ser.gz'
-    ner_jar = 'F:\\Projects\\Python Projects\\SentimentAnalysis\\files\\ner\\stanford-ner-2018-10-16\\stanford-ner.jar'
+    ner_jar = 'F:\\Projects\\Python Projects\\NERTest\\stanford\\stanford-ner-2018-10-16\\stanford-ner.jar'
 
     sentiment_raw_training_data = 'F:\\Projects\Python Projects\\SentimentAnalysis\\files\\sentiment_analysis\\sentiment_analysis_plotting_dataset_raw.csv'
     sentiment_labelled_data = 'F:\\Projects\Python Projects\\SentimentAnalysis\\files\\sentiment_analysis\\sentiment_labelled_data.xlsx'
@@ -37,6 +37,8 @@ class Config:
     sentiment_testing_data = 'F:\\Projects\Python Projects\\SentimentAnalysis\\files\\sentiment_analysis\\training_data.csv'
 
     sentiment_analysis_model = 'F:\\Projects\Python Projects\\SentimentAnalysis\\files\\sentiment_analysis\\sentiment_analysis_model.h5'
+
+    word2vec_embedding = 'F:\\Projects\Python Projects\\SentimentAnalysis\\embedding\\word2vec.txt'
 
     labels = ['2018/04', '2018/05', '2018/06', '2018/07', '2018/08', '2018/09', '2018/10', '2018/11', '2018/12',
               '2019/01', '2019/02', '2019/03', '2019/04']
@@ -47,3 +49,4 @@ class Config:
     x1_plot = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 
     plotting_dataset = 'F:\\Projects\Python Projects\\SentimentAnalysis\\files\\sentiment_analysis\\plotting_data.csv'
+    vocabulary = 'F:\\Projects\Python Projects\\SentimentAnalysis\\files\\sentiment_analysis\\vocabulary.csv'

@@ -15,6 +15,8 @@ class Stemmer:
         self.nepali_suffix = self.nepali_suffix.sort_values('length', ascending=True)
 
     def get_suffix(self, string):
+        print('\nStemming Article')
+
         stemmed_list = list()
         suffix_list = list(self.nepali_suffix['nepali_suffix'])
         skip_words_list = list(self.skip_words['skip_words'])
@@ -36,7 +38,6 @@ def strip_suffix(string, suffix_list, skip_words_list):
 
 def check_ends_with(string, local_list, present_suffix, skip_words_list):
     for data in local_list:
-        # Binary Search
         if string in skip_words_list:
             break
         if string.endswith(data):

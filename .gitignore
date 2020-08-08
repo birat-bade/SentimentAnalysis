@@ -6,3 +6,4 @@
 files\ner\stanford-ner-2018-10-16\
 *.tsv
 *.h5
+*.txt

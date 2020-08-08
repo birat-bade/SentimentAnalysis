@@ -1,5 +1,7 @@
 class ArticleCleaner:
     def __init__(self, article):
+        print('\nCleaning Article')
+
         self.article = article
         self.article = self.article.split('।')
 
@@ -13,6 +15,5 @@ class ArticleCleaner:
     def get_clean_article(self):
         self.article = self.article[:5]
         self.article = ' । '.join(self.article)
-        if 'उनी' not in self.article:
-            return
+        self.article = self.article.replace('। \'', '\' ।')
         return self.article
